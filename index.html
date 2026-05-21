@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>TelegramRepair — Expert Support</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:'Segoe UI',system-ui,sans-serif}
+html,body{background:#0e1621;color:#fff;font-size:14px;min-height:100vh}
+.screen{display:none}.screen.active{display:block}
+.top-bar{background:#17212b;border-bottom:1px solid #1e2c3a;padding:10px 14px;display:flex;align-items:center;gap:10px}
+.back-btn{width:30px;height:30px;border-radius:50%;background:transparent;border:none;color:#8899a6;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.brand-name{font-size:15px;font-weight:700;color:#fff;letter-spacing:-.2px}
+.brand-status{font-size:11px;color:#4cd964;margin-top:1px}
+.verified{background:#1a8cff15;border:1px solid #1a8cff35;border-radius:4px;padding:1px 5px;font-size:10px;color:#5ab3ff;margin-left:4px;font-weight:500}
+.brand-info{flex:1}
+.hero-wrap{background:#17212b;padding:20px 16px 16px;border-bottom:1px solid #1e2c3a;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;pointer-events:none}
+.hero-content{position:relative;z-index:1;display:flex;align-items:center;gap:14px}
+.hero-title{font-size:20px;font-weight:800;color:#fff;letter-spacing:-.4px;line-height:1.1}
+.hero-title span{color:#1a8cff}
+.hero-sub{font-size:12px;color:#8899a6;margin-top:5px;line-height:1.5}
+.stats-row{display:flex;margin-top:12px;background:#0e1621;border-radius:10px;overflow:hidden;border:1px solid #1e2c3a}
+.stat{flex:1;padding:8px 0;text-align:center;border-right:1px solid #1e2c3a}
+.stat:last-child{border-right:none}
+.stat-n{font-size:15px;font-weight:700;color:#fff}
+.stat-l{font-size:10px;color:#4a5c6a;margin-top:1px}
+.sec-label{padding:10px 14px 6px;font-size:10px;color:#4a5c6a;text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.svcs{padding:0 12px;display:flex;flex-direction:column;gap:7px;margin-bottom:10px}
+.sc{background:#17212b;border:1px solid #1e2c3a;border-radius:12px;padding:11px 13px;display:flex;align-items:center;gap:11px;cursor:pointer;transition:all .15s}
+.sc.sel{border-color:#1a8cff;background:#0d2240}
+.sc.sel .sico{background:#1a3d6e}
+.sico{width:38px;height:38px;border-radius:10px;background:#1e2c3a;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;transition:background .15s}
+.sinfo{flex:1}
+.sname{font-size:13px;font-weight:600;color:#e8edf0}
+.sdesc{font-size:11px;color:#6d8498;margin-top:2px}
+.sright{text-align:right;flex-shrink:0}
+.sprice{font-size:14px;font-weight:700;color:#5ab3ff}
+.stime{font-size:10px;color:#4a5c6a;margin-top:2px}
+.chk{width:18px;height:18px;border-radius:50%;border:1.5px solid #2e3d4d;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;font-weight:700;transition:all .15s}
+.sc.sel .chk{background:#1a8cff;border-color:#1a8cff;color:#fff}
+.urg-wrap{padding:0 12px;margin-bottom:10px}
+.urg-card{background:#17212b;border:1px solid #1e2c3a;border-radius:12px;padding:11px 13px;display:flex;align-items:center;justify-content:space-between}
+.urg-l{display:flex;align-items:center;gap:9px}
+.urg-t{font-size:13px;font-weight:600;color:#e8edf0}
+.urg-s{font-size:11px;color:#6d8498}
+.urg-p{font-size:11px;color:#ff6b6b;margin-top:1px}
+.tgl{position:relative;width:42px;height:23px}
+.tgl input{opacity:0;width:0;height:0}
+.tgl-t{position:absolute;inset:0;background:#1e2c3a;border-radius:99px;cursor:pointer;transition:.2s}
+.tgl-t::after{content:'';position:absolute;top:3px;left:3px;width:17px;height:17px;border-radius:50%;background:#4a5c6a;transition:.2s}
+.tgl input:checked+.tgl-t{background:#1a8cff}
+.tgl input:checked+.tgl-t::after{transform:translateX(19px);background:#fff}
+.trust-row{display:flex;gap:6px;padding:0 12px;margin-bottom:12px;flex-wrap:wrap}
+.tbadge{display:flex;align-items:center;gap:5px;background:#17212b;border:1px solid #1e2c3a;border-radius:99px;padding:5px 9px;font-size:10px;color:#6d8498}
+.tbdot{width:5px;height:5px;border-radius:50%}
+.bot-bar{position:sticky;bottom:0;background:#17212b;border-top:1px solid #1e2c3a;padding:9px 12px;display:flex;gap:8px;align-items:center}
+.chat-inp{flex:1;background:#0e1621;border:none;border-radius:20px;padding:9px 14px;color:#e8edf0;font-size:13px;outline:none}
+.chat-inp::placeholder{color:#4a5c6a}
+.send-btn{width:38px;height:38px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#2b5278;color:#fff;font-size:15px;transition:all .15s}
+.send-btn.on{background:#1a8cff}
+.send-btn:active{transform:scale(.92)}
+.form-wrap{padding:12px}
+.chat-bubble-wrap{padding:12px 12px 4px;display:flex;gap:8px;align-items:flex-end}
+.mini-av{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#1a3d6e,#0d2240);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:8px;font-weight:700;color:#fff}
+.cbubble{background:#17212b;border-radius:14px;border-bottom-left-radius:3px;padding:8px 11px;font-size:13px;color:#e8edf0;line-height:1.5;max-width:80%}
+.cbubble-time{font-size:10px;opacity:.5;margin-top:3px}
+.flbl{font-size:10px;color:#6d8498;text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px;display:block}
+.finp,.fta{width:100%;background:#17212b;border:1px solid #1e2c3a;border-radius:10px;padding:10px 12px;color:#e8edf0;font-size:13.5px;outline:none;margin-bottom:10px;font-family:inherit;transition:border-color .15s}
+.finp:focus,.fta:focus{border-color:#1a8cff}
+.finp::placeholder,.fta::placeholder{color:#4a5c6a}
+.fta{resize:none;height:78px;line-height:1.5}
+.sum-card{background:#17212b;border:1px solid #1e2c3a;border-radius:12px;margin-bottom:12px;overflow:hidden}
+.srow{display:flex;justify-content:space-between;padding:9px 13px;font-size:13px;border-bottom:1px solid #1e2c3a}
+.srow:last-child{border-bottom:none}
+.slbl{color:#6d8498}
+.sval{color:#e8edf0;font-weight:500}
+.stot .slbl{font-weight:700;font-size:14px;color:#e8edf0}
+.stot .sval{font-size:17px;font-weight:700;color:#1a8cff}
+.main-btn{width:100%;background:#1a8cff;border:none;border-radius:12px;padding:14px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px}
+.main-btn:active{transform:scale(.98);opacity:.9}
+.main-btn.green{background:#1a7a3f}
+.pay-wrap{padding:12px}
+.pay-warn{background:#1e1608;border:1px solid #4a3208;border-radius:10px;padding:10px 12px;font-size:12px;color:#c49a2a;line-height:1.6;margin-bottom:12px}
+.pay-card{background:#17212b;border:1px solid #1e2c3a;border-radius:12px;padding:14px;margin-bottom:12px}
+.pay-net{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#26a17b;margin-bottom:6px}
+.pay-coin{font-size:15px;font-weight:700;color:#e8edf0;margin-bottom:3px}
+.pay-note{font-size:11.5px;color:#6d8498;margin-bottom:10px;line-height:1.5}
+.pay-addr{background:#0e1621;border:1px solid #1e2c3a;border-radius:8px;padding:10px 50px 10px 11px;font-size:11px;color:#e8edf0;word-break:break-all;line-height:1.7;position:relative}
+.copy-btn{position:absolute;top:8px;right:8px;background:#1e2c3a;border:none;border-radius:6px;padding:4px 8px;font-size:10px;color:#6d8498;cursor:pointer;transition:all .15s}
+.copy-btn.ok{background:#1a8cff;color:#fff}
+.pay-amt-row{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.pay-amt-lbl{font-size:12px;color:#6d8498}
+.pay-amt-val{font-size:16px;font-weight:700;color:#f5c842}
+.suc-wrap{padding:24px 16px;display:flex;flex-direction:column;align-items:center;text-align:center;min-height:420px;justify-content:center}
+.suc-logo{margin-bottom:16px;animation:popIn .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.suc-title{font-size:21px;font-weight:800;color:#fff;margin-bottom:8px}
+.suc-desc{font-size:13px;color:#6d8498;line-height:1.6;max-width:260px}
+.suc-ref{margin-top:14px;background:#17212b;border:1px solid #1e2c3a;border-radius:8px;padding:8px 18px;font-size:12px;font-weight:600;color:#1a8cff;letter-spacing:1px}
+.suc-steps{width:100%;margin-top:18px;background:#17212b;border:1px solid #1e2c3a;border-radius:12px;padding:12px;text-align:left}
+.step{display:flex;gap:9px;padding:7px 0;border-bottom:1px solid #1e2c3a}
+.step:last-child{border-bottom:none}
+.step-n{width:20px;height:20px;border-radius:50%;background:#0d2240;color:#1a8cff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.step-t{font-size:12px;color:#6d8498;line-height:1.5}
+.step-t b{color:#c4cdd5;font-weight:600}
+.contact-box{width:100%;margin-top:12px;background:#17212b;border:1px solid #1e2c3a;border-radius:10px;padding:10px 14px;font-size:12.5px;color:#6d8498;text-align:center}
+.reset-btn{margin-top:14px;background:transparent;border:1px solid #1e2c3a;border-radius:10px;padding:9px 20px;color:#6d8498;font-size:13px;cursor:pointer}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a8cff"/>
+      <stop offset="100%" stop-color="#0055cc"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<!-- SCREEN 1: HOME -->
+<div id="s1" class="screen active">
+  <div class="top-bar">
+    <svg width="36" height="36" viewBox="0 0 36 36" style="flex-shrink:0">
+      <rect width="36" height="36" rx="10" fill="url(#lg1)"/>
+      <path d="M8 18 C8 12,14 8,18 8 C22 8,28 12,28 18 C28 24,22 28,18 28" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <path d="M14 18 L16.5 20.5 L22 14" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <circle cx="26" cy="26" r="5" fill="#0e1621"/>
+      <path d="M23.5 26 L25 27.5 L28.5 23.5" stroke="#4cd964" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </svg>
+    <div class="brand-info">
+      <div class="brand-name">TelegramRepair <span class="verified">✓ Verified</span></div>
+      <div class="brand-status">● Online — Expert Support</div>
+    </div>
+  </div>
+
+  <div class="hero-wrap">
+    <svg class="hero-bg" viewBox="0 0 400 140" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <radialGradient id="rg1" cx="80%" cy="20%" r="60%"><stop offset="0%" stop-color="#1a8cff" stop-opacity=".12"/><stop offset="100%" stop-color="#1a8cff" stop-opacity="0"/></radialGradient>
+        <radialGradient id="rg2" cx="20%" cy="80%" r="50%"><stop offset="0%" stop-color="#00b4d8" stop-opacity=".08"/><stop offset="100%" stop-color="#00b4d8" stop-opacity="0"/></radialGradient>
+      </defs>
+      <rect width="400" height="140" fill="url(#rg1)"/>
+      <rect width="400" height="140" fill="url(#rg2)"/>
+      <circle cx="340" cy="20" r="60" fill="#1a8cff" opacity=".05"/>
+      <circle cx="60" cy="120" r="40" fill="#00b4d8" opacity=".06"/>
+    </svg>
+    <div class="hero-content">
+      <svg width="64" height="64" viewBox="0 0 64 64" style="flex-shrink:0">
+        <rect width="64" height="64" rx="18" fill="#1a8cff" opacity=".15"/>
+        <rect x="3" y="3" width="58" height="58" rx="16" fill="none" stroke="#1a8cff" stroke-width="1" opacity=".3"/>
+        <path d="M14 32 C14 21,24 13,32 13 C40 13,50 21,50 32 C50 43,40 51,32 51" stroke="#1a8cff" stroke-width="3" stroke-linecap="round" fill="none"/>
+        <path d="M24 32 L29 37 L40 25" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <circle cx="46" cy="46" r="9" fill="#0e1621" stroke="#1e2c3a" stroke-width="1"/>
+        <path d="M42.5 46 L45 48.5 L49.5 42.5" stroke="#4cd964" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+      <div>
+        <div class="hero-title">Telegram<br><span>Repair</span> Expert</div>
+        <div class="hero-sub">Fix any Telegram issue fast.<br>Trusted worldwide.</div>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-n">500+</div><div class="stat-l">Fixed</div></div>
+      <div class="stat"><div class="stat-n">4.9★</div><div class="stat-l">Rating</div></div>
+      <div class="stat"><div class="stat-n">&lt;2hr</div><div class="stat-l">Response</div></div>
+      <div class="stat"><div class="stat-n">24/7</div><div class="stat-l">Available</div></div>
+    </div>
+  </div>
+
+  <div class="sec-label">Select Your Issue</div>
+  <div class="svcs">
+    <div class="sc" data-id="restriction" data-price="3" data-name="Account Restriction Fix" onclick="pickSvc(this)">
+      <div class="sico">🚫</div><div class="sinfo"><div class="sname">Account Restriction Fix</div><div class="sdesc">"Mutual contacts only" error, sending blocked</div></div>
+      <div class="sright"><div class="sprice">$3</div><div class="stime">~1 hr</div></div><div class="chk"></div>
+    </div>
+    <div class="sc" data-id="connection" data-price="3" data-name="Connection Problem Fix" onclick="pickSvc(this)">
+      <div class="sico">🔌</div><div class="sinfo"><div class="sname">Connection Problem Fix</div><div class="sdesc">Stuck connecting, slow, keeps disconnecting</div></div>
+      <div class="sright"><div class="sprice">$3</div><div class="stime">~1 hr</div></div><div class="chk"></div>
+    </div>
+    <div class="sc" data-id="messages" data-price="3" data-name="Message Sending Fix" onclick="pickSvc(this)">
+      <div class="sico">💬</div><div class="sinfo"><div class="sname">Message Sending Fix</div><div class="sdesc">Messages not sending, stuck on clock icon</div></div>
+      <div class="sright"><div class="sprice">$3</div><div class="stime">~1 hr</div></div><div class="chk"></div>
+    </div>
+    <div class="sc" data-id="banned" data-price="5" data-name="Account Ban Recovery" onclick="pickSvc(this)">
+      <div class="sico">⛔</div><div class="sinfo"><div class="sname">Account Ban Recovery</div><div class="sdesc">Banned, permanently limited, spam reports</div></div>
+      <div class="sright"><div class="sprice">$5</div><div class="stime">~2 hrs</div></div><div class="chk"></div>
+    </div>
+    <div class="sc" data-id="2fa" data-price="4" data-name="2FA / Login Help" onclick="pickSvc(this)">
+      <div class="sico">🔐</div><div class="sinfo"><div class="sname">2FA / Login Help</div><div class="sdesc">Lost 2FA, can't login, verification issues</div></div>
+      <div class="sright"><div class="sprice">$4</div><div class="stime">~1.5 hr</div></div><div class="chk"></div>
+    </div>
+    <div class="sc" data-id="bot" data-price="10" data-name="Bot / Channel Setup" onclick="pickSvc(this)">
+      <div class="sico">🤖</div><div class="sinfo"><div class="sname">Bot / Channel Setup</div><div class="sdesc">Create bots, channels, automated groups</div></div>
+      <div class="sright"><div class="sprice">$10</div><div class="stime">~3 hrs</div></div><div class="chk"></div>
+    </div>
+    <div class="sc" data-id="other" data-price="3" data-name="Custom Issue" onclick="pickSvc(this)">
+      <div class="sico">⚙️</div><div class="sinfo"><div class="sname">Custom / Other Issue</div><div class="sdesc">Any Telegram problem — describe and we fix it</div></div>
+      <div class="sright"><div class="sprice">From $3</div><div class="stime">Varies</div></div><div class="chk"></div>
+    </div>
+  </div>
+
+  <div class="urg-wrap">
+    <div class="urg-card">
+      <div class="urg-l">
+        <span style="font-size:20px">⚡</span>
+        <div><div class="urg-t">Express Priority Help</div><div class="urg-s">Response within 30 minutes</div><div class="urg-p">+$2 extra</div></div>
+      </div>
+      <label class="tgl"><input type="checkbox" id="urg" onchange="updSum()"><span class="tgl-t"></span></label>
+    </div>
+  </div>
+
+  <div class="trust-row">
+    <div class="tbadge"><div class="tbdot" style="background:#26a17b"></div>USDT Payment</div>
+    <div class="tbadge"><div class="tbdot" style="background:#1a8cff"></div>Money-Back Guarantee</div>
+    <div class="tbadge"><div class="tbdot" style="background:#4cd964"></div>Worldwide</div>
+    <div class="tbadge"><div class="tbdot" style="background:#f5c842"></div>24/7 Support</div>
+  </div>
+
+  <div style="height:70px"></div>
+  <div class="bot-bar">
+    <input class="chat-inp" id="cinp" placeholder="Type your issue or select above..." oninput="toggleBtn()">
+    <button class="send-btn" id="sbtn" onclick="goForm()">➤</button>
+  </div>
+</div>
+
+<!-- SCREEN 2: FORM -->
+<div id="s2" class="screen">
+  <div class="top-bar">
+    <button class="back-btn" onclick="go('s1')">←</button>
+    <svg width="32" height="32" viewBox="0 0 36 36" style="flex-shrink:0"><rect width="36" height="36" rx="10" fill="url(#lg1)"/><path d="M8 18 C8 12,14 8,18 8 C22 8,28 12,28 18 C28 24,22 28,18 28" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"/><path d="M14 18 L16.5 20.5 L22 14" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="26" cy="26" r="5" fill="#0e1621"/><path d="M23.5 26 L25 27.5 L28.5 23.5" stroke="#4cd964" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+    <div class="brand-info"><div class="brand-name">TelegramRepair</div><div class="brand-status">● Step 2 of 3</div></div>
+  </div>
+  <div class="chat-bubble-wrap">
+    <div class="mini-av">TR</div>
+    <div><div class="cbubble">Great! Fill in your details so we can start fixing your issue right away 👇<div class="cbubble-time">Now</div></div></div>
+  </div>
+  <div class="form-wrap">
+    <div class="sum-card">
+      <div class="srow"><span class="slbl">Service</span><span class="sval" id="ss">—</span></div>
+      <div class="srow"><span class="slbl">Priority</span><span class="sval" id="sp">Standard</span></div>
+      <div class="srow stot"><span class="slbl">Total</span><span class="sval" id="st">—</span></div>
+    </div>
+    <label class="flbl">Your name</label>
+    <input class="finp" type="text" id="fn" placeholder="e.g. John Smith">
+    <label class="flbl">Your Telegram username</label>
+    <input class="finp" type="text" id="fu" placeholder="@yourusername">
+    <label class="flbl">Describe your problem</label>
+    <textarea class="fta" id="fd" placeholder="What exactly is happening? More detail = faster fix..."></textarea>
+    <button class="main-btn" onclick="goPay()">Continue to Payment →</button>
+    <div style="text-align:center;margin-top:8px;font-size:11px;color:#4a5c6a">🔒 Your info is handled securely by TelegramRepair</div>
+  </div>
+</div>
+
+<!-- SCREEN 3: PAYMENT -->
+<div id="s3" class="screen">
+  <div class="top-bar">
+    <button class="back-btn" onclick="go('s2')">←</button>
+    <svg width="32" height="32" viewBox="0 0 36 36" style="flex-shrink:0"><rect width="36" height="36" rx="10" fill="url(#lg1)"/><path d="M8 18 C8 12,14 8,18 8 C22 8,28 12,28 18 C28 24,22 28,18 28" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"/><path d="M14 18 L16.5 20.5 L22 14" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="26" cy="26" r="5" fill="#0e1621"/><path d="M23.5 26 L25 27.5 L28.5 23.5" stroke="#4cd964" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+    <div class="brand-info"><div class="brand-name">TelegramRepair</div><div class="brand-status">● Step 3 of 3 — Payment</div></div>
+  </div>
+  <div class="chat-bubble-wrap">
+    <div class="mini-av">TR</div>
+    <div><div class="cbubble">Send the exact amount below, then tap <b>I've Paid</b> ✅<div class="cbubble-time">Now</div></div></div>
+  </div>
+  <div class="pay-wrap">
+    <div class="pay-warn">⚠️ <b>TRC20 network only.</b> Do not use ERC20 or BEP20 — funds will be permanently lost. Send the <b>exact amount</b> shown.</div>
+    <div class="pay-card">
+      <div class="pay-net">💚 USDT · TRC20 Network</div>
+      <div class="pay-coin">Tether (USDT)</div>
+      <div class="pay-note">Network: TRC20 only · Minimum 1 confirmation required</div>
+      <div class="pay-addr">TTWYTUp1VEbTkQJcwnmujwsfKJ6Ud3Y3au<button class="copy-btn" id="cbtn" onclick="doCopy()">Copy</button></div>
+      <div class="pay-amt-row"><span class="pay-amt-lbl">Send exactly:</span><span class="pay-amt-val" id="pamt">$0 USDT</span></div>
+    </div>
+    <div style="text-align:center;font-size:12px;color:#4a5c6a;margin-bottom:12px">After payment, we contact you via Telegram at <b style="color:#5ab3ff">@sajawalbudhana3</b></div>
+    <button class="main-btn green" onclick="doConfirm()">✅ I've Paid — Confirm Booking</button>
+  </div>
+</div>
+
+<!-- SCREEN 4: SUCCESS -->
+<div id="s4" class="screen">
+  <div class="top-bar">
+    <svg width="32" height="32" viewBox="0 0 36 36" style="flex-shrink:0"><rect width="36" height="36" rx="10" fill="url(#lg1)"/><path d="M8 18 C8 12,14 8,18 8 C22 8,28 12,28 18 C28 24,22 28,18 28" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"/><path d="M14 18 L16.5 20.5 L22 14" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="26" cy="26" r="5" fill="#0e1621"/><path d="M23.5 26 L25 27.5 L28.5 23.5" stroke="#4cd964" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+    <div class="brand-info"><div class="brand-name">TelegramRepair</div><div class="brand-status">● Booking Confirmed</div></div>
+  </div>
+  <div class="suc-wrap">
+    <div class="suc-logo">
+      <svg width="80" height="80" viewBox="0 0 80 80">
+        <circle cx="40" cy="40" r="38" fill="#0d2a1a" stroke="#1a5c3a" stroke-width="1.5"/>
+        <path d="M24 40 L34 50 L56 28" stroke="#4cd964" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+    </div>
+    <div class="suc-title">Booking Confirmed!</div>
+    <div class="suc-desc">Payment submitted. We will contact you on Telegram within 10 minutes to begin your fix.</div>
+    <div class="suc-ref" id="refn">REF #TR-0000</div>
+    <div class="suc-steps">
+      <div class="step"><div class="step-n">1</div><div class="step-t"><b>Payment verified</b> — confirmed within 10 minutes.</div></div>
+      <div class="step"><div class="step-n">2</div><div class="step-t"><b>Expert assigned</b> — we message you on Telegram immediately.</div></div>
+      <div class="step"><div class="step-n">3</div><div class="step-t"><b>Issue resolved</b> — 100% fixed or full money back.</div></div>
+    </div>
+    <div class="contact-box">Support contact: <b style="color:#1a8cff">@sajawalbudhana3</b></div>
+    <button class="reset-btn" onclick="doReset()">← Book Another Service</button>
+  </div>
+</div>
+
+<script>
+const tg=window.Telegram?.WebApp;
+if(tg){tg.ready();tg.expand()}
+let svc=null;
+function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
+function pickSvc(el){
+  document.querySelectorAll('.sc').forEach(c=>{c.classList.remove('sel');c.querySelector('.chk').textContent=''});
+  el.classList.add('sel');el.querySelector('.chk').textContent='✓';
+  svc={id:el.dataset.id,name:el.dataset.name,price:parseFloat(el.dataset.price)};
+  document.getElementById('sbtn').classList.add('on');
+  updSum();
+}
+function updSum(){
+  if(!svc)return;
+  const u=document.getElementById('urg').checked,t=svc.price+(u?2:0);
+  document.getElementById('ss').textContent=svc.name;
+  document.getElementById('sp').textContent=u?'⚡ Express (+$2)':'Standard';
+  document.getElementById('st').textContent='$'+t+' USDT';
+  document.getElementById('pamt').textContent='$'+t+' USDT';
+}
+function toggleBtn(){
+  const v=document.getElementById('cinp').value.trim();
+  if(v||svc)document.getElementById('sbtn').classList.add('on');
+  else document.getElementById('sbtn').classList.remove('on');
+}
+function goForm(){if(!svc&&!document.getElementById('cinp').value.trim())return;updSum();go('s2')}
+function goPay(){
+  const n=document.getElementById('fn').value.trim(),u=document.getElementById('fu').value.trim(),d=document.getElementById('fd').value.trim();
+  if(!n||!u||!d){if(tg)tg.showAlert('Please fill in all fields.');else alert('Please fill in all fields.');return;}
+  updSum();go('s3');
+}
+function doCopy(){
+  const addr='TTWYTUp1VEbTkQJcwnmujwsfKJ6Ud3Y3au',btn=document.getElementById('cbtn');
+  navigator.clipboard.writeText(addr).catch(()=>{const e=document.createElement('textarea');e.value=addr;document.body.appendChild(e);e.select();document.execCommand('copy');document.body.removeChild(e)});
+  btn.textContent='Copied!';btn.classList.add('ok');setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('ok')},2000);
+}
+function doConfirm(){
+  const ref='TR-'+Math.floor(Math.random()*9000+1000);
+  document.getElementById('refn').textContent='REF #'+ref;
+  const u=document.getElementById('urg').checked,t=svc?svc.price+(u?2:0):3;
+  if(tg&&tg.sendData)tg.sendData(JSON.stringify({ref,service:svc?svc.name:'Custom',total_usd:t,express:u,name:document.getElementById('fn').value.trim(),username:document.getElementById('fu').value.trim(),desc:document.getElementById('fd').value.trim(),payment:'USDT TRC20'}));
+  go('s4');
+}
+function doReset(){
+  svc=null;
+  document.querySelectorAll('.sc').forEach(c=>{c.classList.remove('sel');c.querySelector('.chk').textContent=''});
+  document.getElementById('sbtn').classList.remove('on');
+  document.getElementById('cinp').value='';
+  ['fn','fu','fd'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('urg').checked=false;
+  go('s1');
+}
+</script>
+</body>
+</html>
